@@ -1,0 +1,24 @@
+{
+    "name": "srdev93/mb-knowledgebase-module",
+    "description": "",
+    "type": "laravel-module",
+    "authors": [
+        {
+            "name": "sajad Rahmani",
+            "email": "sst.sajad.e@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\KnowledgeBase\\": ""
+        }
+    }
+}
