@@ -16,7 +16,9 @@ class KnowledgeBaseCategoryController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->brand_id) {
+        if (\request()->session()->has('brand_id')){
+            $categories = KnowledgeBaseCategory::where('brand_id', \request()->session()->get('brand_id'))->whereNull('parent_id')->orderBy('sort_id')->get();
+        }elseif (Auth::user()->brand_id) {
             $categories = KnowledgeBaseCategory::where('brand_id', Auth::user()->brand_id)->whereNull('parent_id')->orderBy('sort_id')->get();
         }else {
             $categories = KnowledgeBaseCategory::whereNull('parent_id')->orderBy('sort_id')->get();

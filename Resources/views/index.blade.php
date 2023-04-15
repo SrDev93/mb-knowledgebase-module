@@ -37,8 +37,8 @@
                                         @if(!\Illuminate\Support\Facades\Auth::user()->brand_id)
                                             <td>{{ optional($item->brand)->name }}</td>
                                         @endif
-                                        <td>@if($item->category) {{ $item->category->name }} @endif</td>
-                                        <td>{{ $item->title }}</td>
+                                        <td>@if($item->category) {{ $item->category->name }} @elseif($item->parent and $item->parent->category) {{ $item->parent->category->name }} @endif</td>
+                                        <td>@if($item->parent) <i class="fa fa-reply"></i> {{ $item->parent->title }} @else {{ $item->title }} @endif</td>
                                         <td>
                                             <a href="{{ route('KnowledgeBase.edit', $item->id) }}" class="btn btn-primary fs-14 text-white edit-icn" title="ویرایش">
                                                 <i class="fe fe-edit"></i>
@@ -52,6 +52,32 @@
                                             </form>
                                         </td>
                                     </tr>
+                                    @if(count($item->children))
+                                        @foreach($item->children as $child)
+                                            <tr>
+                                                <td>{{ optional($child->language)->title }}</td>
+                                                @if(!\Illuminate\Support\Facades\Auth::user()->brand_id)
+                                                    <td>{{ optional($child->brand)->name }}</td>
+                                                @endif
+                                                <td>
+{{--                                                    @if($child->category) {{ $child->category->name }} @elseif($child->parent and $child->parent->category) {{ $child->parent->category->name }} @endif--}}
+                                                </td>
+                                                <td>@if($child->parent) <i class="fa fa-reply"></i> {{ $child->parent->title }} @else {{ $child->title }} @endif</td>
+                                                <td>
+                                                    <a href="{{ route('KnowledgeBase.edit', $child->id) }}" class="btn btn-primary fs-14 text-white edit-icn" title="ویرایش">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
+                                                    <button type="submit" onclick="return confirm('برای حذف اطمبنان دارید؟')" form="form-{{ $child->id }}" class="btn btn-danger fs-14 text-white edit-icn" title="حذف">
+                                                        <i class="fe fe-trash"></i>
+                                                    </button>
+                                                    <form id="form-{{ $child->id }}" action="{{ route('KnowledgeBase.destroy', $child->id) }}" method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>

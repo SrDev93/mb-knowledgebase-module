@@ -4,11 +4,13 @@ namespace Modules\KnowledgeBase\Entities;
 
 use App\Models\Brand;
 use App\Models\Language;
+use App\Models\Report;
 use App\Models\User;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Base\Entities\Comment;
+use Modules\Base\Entities\Like;
 use Modules\Base\Entities\Visit;
 
 class KnowledgeBase extends Model
@@ -21,6 +23,21 @@ class KnowledgeBase extends Model
     public function category()
     {
         return $this->belongsTo(KnowledgeBaseCategory::class, 'category_id');
+    }
+
+    public function parent()
+    {
+        return $this->hasOne(KnowledgeBase::class, 'id','parent_id');
+    }
+
+    public function reply()
+    {
+        return $this->hasOne(KnowledgeBase::class, 'id','reply_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(KnowledgeBase::class, 'parent_id')->with('children');
     }
 
     public function attachments()
@@ -50,6 +67,14 @@ class KnowledgeBase extends Model
 
     public function visits() {
         return $this->morphMany(Visit::class, 'visits');
+    }
+
+    public function likes() {
+        return $this->morphMany(Like::class, 'likes');
+    }
+
+    public function reports() {
+        return $this->hasMany(Report::class, 'knowledge_base_id', 'id');
     }
 
     protected static function newFactory()

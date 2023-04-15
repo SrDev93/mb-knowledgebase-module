@@ -19,10 +19,12 @@ class KnowledgeBaseController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->brand_id) {
-            $items = KnowledgeBase::where('brand_id', Auth::user()->brand_id)->get();
+        if (\request()->session()->has('brand_id')){
+            $items = KnowledgeBase::whereNull('parent_id')->where('brand_id', \request()->session()->get('brand_id'))->get();
+        }elseif (Auth::user()->brand_id) {
+            $items = KnowledgeBase::whereNull('parent_id')->where('brand_id', Auth::user()->brand_id)->get();
         }else {
-            $items = KnowledgeBase::all();
+            $items = KnowledgeBase::whereNull('parent_id')->get();
         }
 
         return view('knowledgebase::index', compact('items'));
@@ -34,7 +36,9 @@ class KnowledgeBaseController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->brand_id) {
+        if (\request()->session()->has('brand_id')){
+            $categories = KnowledgeBaseCategory::where('brand_id', \request()->session()->get('brand_id'))->get();
+        }elseif (Auth::user()->brand_id) {
             $categories = KnowledgeBaseCategory::where('brand_id', Auth::user()->brand_id)->get();
         }else {
             $categories = KnowledgeBaseCategory::get();
@@ -101,7 +105,9 @@ class KnowledgeBaseController extends Controller
      */
     public function edit(KnowledgeBase $KnowledgeBase)
     {
-        if (Auth::user()->brand_id) {
+        if (\request()->session()->has('brand_id')){
+            $categories = KnowledgeBaseCategory::where('brand_id', \request()->session()->get('brand_id'))->get();
+        }elseif (Auth::user()->brand_id) {
             $categories = KnowledgeBaseCategory::where('brand_id', Auth::user()->brand_id)->get();
         }else {
             $categories = KnowledgeBaseCategory::get();
